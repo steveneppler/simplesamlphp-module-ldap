@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SimpleSAML\Module\ldap\Error;
 
+use SimpleSAML\Logger;
 use SimpleSAML\Error\ErrorCodes;
 use SimpleSAML\Locale\Translate;
 use SimpleSAML\Module\core\Controller\Login;
