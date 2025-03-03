@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace SimpleSAML\Module\ldap\Connector;
 
+use SimpleSAML\Logger;
+use function ldap_get_option;
+
+
+use SimpleSAML\Module\ldap\Error\ActiveDirectoryErrors;
 use SimpleSAML\Module\ldap\Auth\InvalidCredentialResult;
 use Symfony\Component\Ldap\Exception\InvalidCredentialsException;
-
-
-use function ldap_get_option;
 
 /**
  * Extends Ldap so that we can diagnose error messages from MS Active Directory
@@ -18,6 +20,22 @@ class ActiveDirectory extends Ldap
     public const ERR_PASSWORD_RESET = 'RESETPASSWORD';
     public const ERR_ACCOUNT_RESET = 'RESETACCOUNT';
     public const ERR_LOGON_RESTRICTION = 'LOGONRESTRICTION';
+
+    public function bind(?string $username, #[\SensitiveParameter]?string $password): void
+    {
+        try {
+            $this->connection->bind($username, strval($password));
+        } catch (InvalidCredentialsException $e) {
+            Logger::debug("LDAP bind(): InvalidCredentialsException");
+            throw new Error\Error($this->resolveBindException($e), null, 401, new ActiveDirectoryErrors());
+        }
+
+        if ($username === null) {
+            Logger::debug("LDAP bind(): Anonymous bind succesful.");
+        } else {
+            Logger::debug(sprintf("LDAP bind(): Bind successful for DN '%s'.", $username));
+        }
+    }
 
 
     /**
