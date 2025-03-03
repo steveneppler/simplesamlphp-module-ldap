@@ -8,6 +8,7 @@ use SimpleSAML\Logger;
 use function ldap_get_option;
 
 
+use SimpleSAML\Error;
 use SimpleSAML\Module\ldap\Error\ActiveDirectoryErrors;
 use SimpleSAML\Module\ldap\Auth\InvalidCredentialResult;
 use Symfony\Component\Ldap\Exception\InvalidCredentialsException;
