@@ -27,6 +27,7 @@ class ActiveDirectoryErrors extends ErrorCodes
      */
     public function getCustomTitles(): array
     {
+        Logger::debug(string: "ActiveDirectoryErrors: getCustomTitles()");
         return array_merge(parent::getCustomTitles(), [
             self::RESETPASSWORD => Translate::noop('Password Reset Required'),
             self::RESETACCOUNT => Translate::noop('Account Reset Required'),
@@ -41,6 +42,7 @@ class ActiveDirectoryErrors extends ErrorCodes
      */
     public function getCustomDescriptions(): array
     {
+        Logger::debug(string: "ActiveDirectoryErrors: getCustomDescriptions()");
         return array_merge(parent::getCustomDescriptions(), [
             self::RESETPASSWORD => Translate::noop(
                 "Your password has expired or needs to be reset. Please follow the instructions " .
