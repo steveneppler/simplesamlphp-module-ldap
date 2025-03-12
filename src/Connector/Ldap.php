@@ -99,8 +99,7 @@ class Ldap implements ConnectorInterface
         try {
             $this->connection->bind($username, strval($password));
         } catch (InvalidCredentialsException $e) {
-            Logger::debug("LDAP bind(): InvalidCredentialsException");
-            throw new Error\Error($this->resolveBindException($e), null, 401, new ActiveDirectoryErrors());
+            throw new Error\Error($this->resolveBindException($e));
         }
 
         if ($username === null) {
