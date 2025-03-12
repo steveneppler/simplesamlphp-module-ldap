@@ -10,8 +10,10 @@ use function ldap_get_option;
 
 use SimpleSAML\Error;
 use SimpleSAML\Module\ldap\Error\ActiveDirectoryErrors;
+use SimpleSAML\Module\ldap\Error\ActiveDirectoryCustomError;
 use SimpleSAML\Module\ldap\Auth\InvalidCredentialResult;
 use Symfony\Component\Ldap\Exception\InvalidCredentialsException;
+
 
 /**
  * Extends Ldap so that we can diagnose error messages from MS Active Directory
@@ -28,7 +30,7 @@ class ActiveDirectory extends Ldap
             $this->connection->bind($username, strval($password));
         } catch (InvalidCredentialsException $e) {
             Logger::debug("LDAP bind(): InvalidCredentialsException");
-            throw new Error\Error($this->resolveBindException($e), null, 401, new ActiveDirectoryErrors());
+            throw new ActiveDirectoryCustomError($this->resolveBindException($e), null, 401, new ActiveDirectoryErrors());
         }
 
         if ($username === null) {
