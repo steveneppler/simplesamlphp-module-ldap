@@ -18,7 +18,6 @@ class ActiveDirectoryErrors extends ErrorCodes
     public function __construct()
     {
         parent::__construct();
-        Login::registerErrorCodeClass($this);
     }
 
     /**
