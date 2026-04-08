@@ -27,6 +27,7 @@ class Ldap implements ConnectorInterface
 {
     use LdapHelpers;
 
+
     /**
      * @var \Symfony\Component\Ldap\Adapter\AdapterInterface
      */
@@ -99,7 +100,7 @@ class Ldap implements ConnectorInterface
         try {
             $this->connection->bind($username, strval($password));
         } catch (InvalidCredentialsException $e) {
-            throw new Error\Error($this->resolveBindException($e));
+            throw new Error\Error($this->resolveBindException());
         }
 
         if ($username === null) {
@@ -108,6 +109,7 @@ class Ldap implements ConnectorInterface
             Logger::debug(sprintf("LDAP bind(): Bind successful for DN '%s'.", $username));
         }
     }
+
 
     /**
      * @inheritDoc
@@ -128,7 +130,7 @@ class Ldap implements ConnectorInterface
         try {
             $this->connection->saslBind($username, strval($password), $mech, $realm, $authcId, $authzId, $props);
         } catch (InvalidCredentialsException $e) {
-            throw new Error\Error($this->resolveBindException($e));
+            throw new Error\Error($this->resolveBindException());
         }
 
         if ($username === null) {
@@ -137,6 +139,7 @@ class Ldap implements ConnectorInterface
             Logger::debug(sprintf("LDAP bind(): Bind successful for DN '%s'.", $username));
         }
     }
+
 
     /**
      * @inheritDoc
@@ -149,6 +152,7 @@ class Ldap implements ConnectorInterface
 
         return $this->connection->whoami();
     }
+
 
     /**
      * @inheritDoc
@@ -174,6 +178,11 @@ class Ldap implements ConnectorInterface
                 ));
             } elseif (count($result) === 1) {
                 $entry = array_pop($result);
+                Logger::debug(sprintf(
+                    "LDAP search(): Found 1 entry searching base '%s' for '%s'",
+                    $base,
+                    $filter,
+                ));
                 break;
             } else {
                 Logger::debug(sprintf(
@@ -235,10 +244,9 @@ class Ldap implements ConnectorInterface
     /**
      * Resolve the message to a UI exception
      *
-     * @param InvalidCredentialsException $e
      * @return string
      */
-    protected function resolveBindException(InvalidCredentialsException $e): string
+    protected function resolveBindException(): string
     {
         return self::ERR_WRONG_PASS;
     }
